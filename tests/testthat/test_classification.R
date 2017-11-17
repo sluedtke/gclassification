@@ -10,7 +10,7 @@ mapping_df =  data.frame(subbasinID = c(1, 2, 6, 7, 12),
                       stringsAsFactors = F)
 #
 # create a test tree that we think we understand quite well
-test_tree = read_tsv("./example_tree.tsv") %>%
+test_tree = read_tsv("../../data/example_tree.tsv") %>%
   left_join(mapping_df) %>%
   rename(Parent = subbasinID, Child = nextID) %>%
   as.data.frame() %>%
@@ -93,3 +93,10 @@ test_that("Check the new levels", {
 })
 
 #  -------------------------------------------------------------
+context("Check the function to parse values through the tree")
+
+test_that('parsing node attributes', {
+            temp_df = data.tree::ToDataFrameTable(test_tree, "name", "station_id") %>%
+              arrange(name)
+})
+
