@@ -113,19 +113,19 @@ test_that("Check the new levels", {
 context("Check the function to extract only nodes with a required attribute")
 
 test_that("Extract only nodes with a required attribute from cloned trees", {
-            test_a = extract_node_v(sub_a, attribute = "station_id")
+            test_a = extract_node_v_helper(sub_a, attribute = "station_id")
             expect_equal(character(0),  test_a)
-            test_b = extract_node_v(sub_b, attribute = "station_id")
+            test_b = extract_node_v_helper(sub_b, attribute = "station_id")
             expect_equal("12",  test_b)
-            test_c = extract_node_v(sub_c, attribute = "station_id")
+            test_c = extract_node_v_helper(sub_c, attribute = "station_id")
             expect_equal("12", test_c)
 })
 
 test_that("Extract only nodes with a required attribute from the base tree", {
-            test_vect = extract_node_v(base_tree_a, attribute = "station_id")
+            test_vect = extract_node_v_helper(base_tree_a, attribute = "station_id")
             expect_equal(sort(c("1", "2", "6", "7", "12")), sort(test_vect))
             # that one should fail
-            expect_error(extract_node_v(base_tree_a, attribute = "false_column"))
+            expect_error(extract_node_v_helper(base_tree_a, attribute = "false_column"))
 })
 
 

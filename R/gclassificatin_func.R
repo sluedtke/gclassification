@@ -70,7 +70,7 @@ reduce_tree_helper =  function(x, data_tree, attribute) {
 #' test_tree_reduced = reduce_tree(base_tree_b, attribute = 'station_id')
 
 reduce_tree = function(data_tree, attribute) {
-  node_ids = extract_node_v(data_tree, attribute)
+  node_ids = extract_node_v_helper(data_tree, attribute)
   tree_reduced = ldply(node_ids, reduce_tree_helper, data_tree, attribute) %>% 
     FromDataFrameNetwork()
   return(tree_reduced)
