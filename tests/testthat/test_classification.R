@@ -6,6 +6,8 @@ library(tidyverse)
 library(data.tree)
 
 #  ------------------------------
+# test data creation
+#  ------------------------------
 mapping_df_a =  data.frame(subbasinID = c(1, 2, 6, 7, 12),
                       station_id = c("a", "b", "c", "d", "e"),
                       stringsAsFactors = F)
@@ -29,10 +31,28 @@ base_tree_b = read_tsv("../../data/example_tree.tsv") %>%
   as.data.frame() %>%
   data.tree::FromDataFrameNetwork()
 
+#  ------------------------------
+
 test_tree = data.tree::Clone(base_tree_a)
 
 #  ------------------------------
+
+reduced_tree_a = structure(list(from = c("1", "1", "7"),
+                                to = c("7", "6", "12")),
+                           .Names = c("from", "to"),
+                           row.names = c(NA, 3L), class = "data.frame") %>%
+  data.tree::FromDataFrameNetwork()
+
+reduced_tree_b = structure(list(from = c("7", "8", "12"),
+                                to = c("8", "12", "14")), 
+                           .Names = c("from", "to"),
+                           row.names = c(NA, 3L), class = "data.frame") %>%
+  data.tree::FromDataFrameNetwork()
+
+
 #  ------------------------------
+#  ------------------------------
+
 context("Create the tree object from the textfile:
         Tree looks like that:
         #  ------------------------------
@@ -138,13 +158,44 @@ test_that("Test the reduced tree on example base_tree_a", {
                                             attribute = 'station_id')
             test_reduced = test_tree_reduced$Get('height')
             names(test_reduced) = NULL
-            expect_equal(sort(c(1, 1, 1, 2, 3)), sort(test_reduced))
+            expect_equal(sort(c(1, 1, 1, 2, 3, 4)), sort(test_reduced))
 })
 
 test_that("Test the reduced tree on example base_tree_b", {
         test_tree_reduced = reduce_tree(base_tree_b,
                                         attribute = 'station_id')
-            test_reduced = test_tree_reduced$Get('height')
+            test_reduced = test_tree_reduced$Get('height') 
             names(test_reduced) = NULL
-            expect_equal(sort(c(1, 2, 3, 4, 5, 6)), sort(test_reduced))
+            expect_equal(sort(c(1, 2, 3, 4, 5, 6, 7)), sort(test_reduced))
 })
+
+#  -------------------------------------------------------------
+context("Check whether we find a root node of reduced tree")
+
+test_that("Test the reduced tree on example base_tree_a", {
+            test = link_root_node(base_tree_a, reduced_tree_a)
+            expect_equal(as.character(test$from), "-1")
+            expect_equal(as.character(test$to), "1")
+            test_tree_reduced = reduce_tree(base_tree_a,
+                                            attribute = 'station_id')
+            test = link_root_node(base_tree_a, test_tree_reduced)
+            expect_null(test)
+            #  ------------------------------
+            test = link_root_node(base_tree_b, reduced_tree_b)
+            expect_equal(as.character(test$from), "-1")
+            expect_equal(as.character(test$to), "7")
+            test_tree_reduced = reduce_tree(base_tree_b,
+                                            attribute = 'station_id')
+            test = link_root_node(base_tree_a, test_tree_reduced)
+            expect_null(test)
+            #  ------------------------------
+            temp_tree = Clone(FindNode(base_tree_a, "3"))
+            test = link_root_node(temp_tree, reduced_tree_b)
+            expect_equal(as.character(test$from), "3")
+            expect_equal(as.character(test$to), "7")
+            test_tree_reduced = reduce_tree(temp_tree,
+                                            attribute = 'station_id')
+            test = link_root_node(temp_tree, test_tree_reduced)
+            expect_null(test)
+})
+

@@ -3,7 +3,8 @@
 \name{extract_node_v_helper}
 \alias{extract_node_v_helper}
 \title{A function that extracts the nodes of a data.tree object where the given
-attribute is not NA, not called by the user}
+attribute is not NA.
+A helper function that is not called by the user}
 \usage{
 extract_node_v_helper(data_tree, attribute)
 }
@@ -14,10 +15,11 @@ extract_node_v_helper(data_tree, attribute)
 }
 \description{
 A function that extracts the nodes of a data.tree object where the given
-attribute is not NA, not called by the user
+attribute is not NA.
+A helper function that is not called by the user
 }
 \examples{
-test = extract_node_v(data_tree, attribute = "station_id")
+test = extract_node_v(base_tree_a, attribute = "station_id")
 }
 \author{
 Stefan Lüdtke
